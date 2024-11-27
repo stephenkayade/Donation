@@ -14,8 +14,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { resetToInitialState, updateFirstName } from '../../redux/reducers/User';
 import style from './style';
 import { updateSelectedCategoryId } from '../../redux/reducers/Categories';
+import { updateSelectedDonationId } from '../../redux/reducers/Donations';
+import { Routes } from '../../navigation/Routes';
 
-const Home = () => {
+const Home = ({ navigation }) => {
 
     // Redux
     const user = useSelector(state => state.user);
@@ -31,8 +33,6 @@ const Home = () => {
     const [donationItems, setDonationItems] = useState([]);
 
     const categoryPageSize = 4;
-
-    console.log(donationItems);
 
     useEffect(() => {
         const items = donations.items.filter((value) => value.categoryIds.includes(categories.selectedCategoryId));
@@ -130,21 +130,26 @@ const Home = () => {
 
                     <View style={style.donationItemContainer}>
                         {
-                            donationItems.map((donation) => (
-                                <View key={donation.donationItemId} style={style.singleDonationItem}>
+                            donationItems.map((donation) => {
+
+                                const categoryInfo = categories.categories.find(val => val.categoryId === categories.selectedCategoryId)
+
+                                return (<View key={donation.donationItemId} style={style.singleDonationItem}>
 
                                     <SingleDonationItem
                                         onPress={(selectedId) => {
-                                            console.log(selectedId);
+                                            dispatch(updateSelectedDonationId(selectedId))
+                                            navigation.navigate(Routes.SingleDonationItem, {categoryInfo})
                                         }}
                                         donationItemId={(donation.donationItemId)}
                                         donationTitle={donation.name}
                                         uri={donation.image}
                                         price={parseFloat(donation.price)}
-                                        badgeTitle={categories.categories.filter(val => val.categoryId === categories.selectedCategoryId)[0].name}
+                                        badgeTitle={ categoryInfo.name}
                                     />
-                                </View>
-                            ))
+                                </View>)
+
+                            })
                         }
                     </View>
                 }
