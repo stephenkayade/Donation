@@ -6,13 +6,31 @@ import Input from '../../components/Input/Input';
 import Header from '../../components/Header/Header';
 import Button from '../../components/Button/Button';
 import BackButton from '../../components/BackButton/BackButton';
+import createUser from '../../api/user';
+import { Routes } from '../../navigation/Routes';
 
 const Register = ({ navigation }) => {
 
     const [fullName, setFullName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    console.log(fullName)
+    const [success, setSuccess] = useState('')
+    const [error, setError] = useState('')
+
+    const registerUser = async () => {
+        let user = await createUser(fullName, email, password)
+        if (user.error) {
+            setError(user.error)
+        } else {
+            setError('')
+            setSuccess("You have successfully registered")
+            setTimeout(() => {
+                navigation.goBack()
+            }, 3000)
+        }
+    }
+
+    const isDisabled = fullName.length <= 2 || email.length < 5 || password.length <= 8
 
     return (
         <SafeAreaView style={[globalStyle.backgroundWhite, globalStyle.flex]}>
@@ -62,8 +80,19 @@ const Register = ({ navigation }) => {
 
                 </View>
 
+                {
+                    error.length > 0 &&
+                    <Text style={style.error}>{error}</Text>
+                }
+
+                {
+                    success.length > 0 &&
+                    <Text style={style.success}>{error}</Text>
+                }
+
+
                 <View>
-                    <Button title='Register' />
+                    <Button isDisabled={isDisabled} title='Register' onPress={registerUser} />
                 </View>
 
             </ScrollView>

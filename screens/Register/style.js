@@ -11,6 +11,22 @@ const style = StyleSheet.create({
     backButton: {
         marginHorizontal: horizontalScale(14),
         marginTop: verticalScale(7),
+    },
+
+    error: {
+        color: '#ff0000',
+        fontFamily: 'Inter_18pt',
+        fontSize: scaleFontSize(16),
+        fontWeight: '500',
+        marginBottom: verticalScale(24),
+    },
+
+    success: {
+        color: '#28a745',
+        fontFamily: 'Inter_18pt',
+        fontSize: scaleFontSize(16),
+        fontWeight: '500',
+        marginBottom: verticalScale(24),
     }
 
 });

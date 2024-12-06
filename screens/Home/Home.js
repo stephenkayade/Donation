@@ -16,6 +16,7 @@ import style from './style';
 import { updateSelectedCategoryId } from '../../redux/reducers/Categories';
 import { updateSelectedDonationId } from '../../redux/reducers/Donations';
 import { Routes } from '../../navigation/Routes';
+import { logOut } from '../../api/user';
 
 const Home = ({ navigation }) => {
 
@@ -25,6 +26,7 @@ const Home = ({ navigation }) => {
     const donations = useSelector(state => state.donations);
     const dispatch = useDispatch();
 
+    console.log(user)
 
     // Page state
     const [loading, setLoading] = useState(false);
@@ -63,18 +65,33 @@ const Home = ({ navigation }) => {
     };
 
 
+    const logout = async () => {
+
+        dispatch(resetToInitialState())
+
+        await logOut()
+
+
+    }
+
+
 
     return (
         <SafeAreaView style={style.home}>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={globalStyle.backgroundWhite}>
                 <View style={style.header}>
                     <View>
                         <Text style={style.headerIntroText}>Hello, </Text>
                         <View style={style.username}>
-                            <Header title={`${user.firstName} ${user.lastName[0]} .👋`} />
+                            <Header title={`${user.displayName} 👋`} />
                         </View>
                     </View>
-                    <Image source={{ uri: user.profileImage }} style={style.profileImage} resizeMode="contain" />
+                    <View>
+                        <Image source={{ uri: user.profileImage }} style={style.profileImage} resizeMode="contain" />
+                        <Pressable onPress={() => logout()}>
+                            <Header type={3} title={'Logout'} color={'#156CF7'} />
+                        </Pressable>
+                    </View>
                 </View>
 
                 <View style={style.searchBox}>
@@ -139,13 +156,13 @@ const Home = ({ navigation }) => {
                                     <SingleDonationItem
                                         onPress={(selectedId) => {
                                             dispatch(updateSelectedDonationId(selectedId))
-                                            navigation.navigate(Routes.SingleDonationItem, {categoryInfo})
+                                            navigation.navigate(Routes.SingleDonationItem, { categoryInfo })
                                         }}
                                         donationItemId={(donation.donationItemId)}
                                         donationTitle={donation.name}
                                         uri={donation.image}
                                         price={parseFloat(donation.price)}
-                                        badgeTitle={ categoryInfo.name}
+                                        badgeTitle={categoryInfo.name}
                                     />
                                 </View>)
 
